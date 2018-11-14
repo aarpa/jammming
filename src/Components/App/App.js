@@ -13,12 +13,22 @@ class App extends React.Component {
       playlistTracks: [] // Should be an array of objects, each containing name, artist, album and id properties
     }
     this.addTrack = this.addTrack.bind(this);
+    this.removeTrack = this.removeTrack.bind(this);
   }
 
   addTrack(track) {
-    if (!this.state.playlistTracks.includes(track.id)) {
-      this.state.playlistTracks.push(track.id);
+    if (!this.state.playlistTracks.some(savedTrack => savedTrack.id === track.id)) {
+      this.state.playlistTracks.push(track);
+      this.setState(this.state);
+    } else {
+      console.log('This track is already in your playlist');
     }
+  }
+
+  removeTrack(track) {
+    let trackIndex = this.state.playlistTracks.findIndex(savedTrack => savedTrack.id === track.id);
+    this.state.playlistTracks.splice(trackIndex, 1);
+    this.setState(this.state);
   }
 
   render() {
@@ -28,8 +38,8 @@ class App extends React.Component {
         <div className="App">
           <SearchBar />
           <div className="App-playlist">
-            <SearchResults searchResults={this.state.searchResults} onAdd={this.addTrack} /> //state of searchResults is passed to the SearchResults Component using corrsponding prop name
-            <Playlist playlistName={this.state.playlistName} playlistTracks={this.state.playlistTracks} /> //state of user's playlist name and list of tracks is passed to Playlist Component using corresponding prop names
+            <SearchResults searchResults={this.state.searchResults} onAdd={this.addTrack} />
+            <Playlist playlistName={this.state.playlistName} playlistTracks={this.state.playlistTracks} onRemove={this.removeTrack} />
           </div>
         </div>
       </div>
