@@ -10,9 +10,9 @@ class Track extends React.Component {
 
   renderAction() {
     if (this.props.isRemoval) {
-      <a className="Track-action" onClick={this.removeTrack}>'-'</a>
+      return <a className="Track-action" onClick={this.removeTrack}>-</a>
     } else {
-      <a className="Track-action" onClick={this.addTrack}>'+'</a>
+      return <a className="Track-action" onClick={this.addTrack}>+</a>
     }
   }
 
@@ -27,11 +27,11 @@ class Track extends React.Component {
   render() {
     return (
       <div className="Track">
-        <div className="Track-information"> //Simply rendering the track info (name, artist, album) by accessing the props passed down by the TrackList Component
+        <div className="Track-information">
           <h3>{this.props.track.name}</h3>
           <p>{this.props.track.artist} | {this.props.track.album}</p>
         </div>
-        <a className="Track-action"></a> // + or - will go here
+        {this.renderAction()}
       </div>
     );
   }

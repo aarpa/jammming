@@ -8,14 +8,29 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchResults: [], // Initial state. When updated, it will be an array of objects that each contain name, artist, album and id as properties, i.e. results returned from the search//
+      searchResults: [
+        {
+          id: 'sampleTrackId',
+          name: 'trackName',
+          artist: 'trackArtist',
+          album: 'trackAlbum'
+        }
+      ], // Initial state. When updated, it will be an array of objects that each contain name, artist, album and id as properties, i.e. results returned from the search//
       playlistName: '', // Initial name of user's playlist -- should be a string
-      playlistTracks: [] // Should be an array of objects, each containing name, artist, album and id properties
+      playlistTracks: [
+        {
+          id: 'track1',
+          name: 'Halo',
+          artist: 'Beyonce',
+          album: 'I am Sasha Fierce'
+        }
+      ] // Should be an array of objects, each containing name, artist, album and id properties
     }
     this.addTrack = this.addTrack.bind(this);
     this.removeTrack = this.removeTrack.bind(this);
-    tis.updatePlaylistName = this.updatePlaylistName.bind(this);
+    this.updatePlaylistName = this.updatePlaylistName.bind(this);
     this.savePlaylist = this.savePlaylist.bind(this);
+    this.search = this.search.bind(this);
   }
 
   addTrack(track) {
@@ -42,15 +57,19 @@ class App extends React.Component {
     const trackURIs = this.state.playlistTracks.map(track => track.uri);
   }
 
+  search(term) {
+    console.log(term);
+  }
+
   render() {
     return (
       <div>
         <h1>Ja<span className="highlight">mmm</span>ing</h1>
         <div className="App">
-          <SearchBar />
+          <SearchBar onSearch={this.search} />
           <div className="App-playlist">
             <SearchResults searchResults={this.state.searchResults} onAdd={this.addTrack} />
-            <Playlist playlistName={this.state.playlistName} playlistTracks={this.state.playlistTracks} onRemove={this.removeTrack} onNameChange={this.props.updatePlaylistName} onSave={this.props.savePlaylist} />
+            <Playlist playlistName={this.state.playlistName} playlistTracks={this.state.playlistTracks} onRemove={this.removeTrack} onNameChange={this.updatePlaylistName} onSave={this.savePlaylist} />
           </div>
         </div>
       </div>
