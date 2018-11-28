@@ -9,23 +9,9 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchResults: [
-        {
-          id: 'sampleTrackId1',
-          name: 'trackName',
-          artist: 'trackArtist',
-          album: 'trackAlbum'
-        }
-      ], // Initial state. When updated, it will be an array of objects that each contain name, artist, album and id as properties, i.e. results returned from the search
-      playlistName: '', // Initial name of user's playlist -- should be a string
-      playlistTracks: [
-        {
-          id: 'sampleTrackId2',
-          name: 'trackName',
-          artist: 'trackArtist',
-          album: 'trackAlbum'
-        }
-      ] // Should be an array of objects, each containing name, artist, album and id properties
+      searchResults: [],
+      playlistName: '',
+      playlistTracks: []
     }
     this.search = this.search.bind(this);
     this.addTrack = this.addTrack.bind(this);
@@ -64,8 +50,8 @@ class App extends React.Component {
   savePlaylist() {
     const trackURIs = this.state.playlistTracks.map(track => track.uri);
     Spotify.savePlaylist(this.state.playlistName, trackURIs);
-    this.state.playlistName = ''; //reset to empty string
-    this.state.playlistTracks = []; //reset to empty array of objects
+    this.state.playlistName = '';
+    this.state.playlistTracks = [];
     this.setState(this.state);
   }
 

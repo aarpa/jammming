@@ -1,15 +1,15 @@
-let accessToken = ''; // string of characters extracted from URL provided by Spotify
+let accessToken = '';
 const clientId = '96cb1eebc62a4c41bb8aa254b8b77eaa';
-const redirectUri = 'http://localhost:3000/';
+const redirectUri = 'https://jammming.netlify.com/';
 
 const Spotify = {
   getAccessToken() {
-    if (accessToken !== '') { // access token is set
+    if (accessToken !== '') {
       return accessToken;
-    } else { // access token is not set, so extract it from URL or Spotify server
+    } else {
       let accessTokenMatch = window.location.href.match(/access_token=([^&]*)/);
       let expirationTimeMatch = window.location.href.match(/expires_in=([^&]*)/);
-      if (accessTokenMatch && expirationTimeMatch) { // access token is not set, so extract it from URL
+      if (accessTokenMatch && expirationTimeMatch) {
         accessToken = accessTokenMatch[1];
         let expirationTime = expirationTimeMatch[1];
         window.setTimeout(function() {
@@ -17,7 +17,7 @@ const Spotify = {
         }, expirationTime*1000);
         window.history.pushState({}, null, '/');
         return accessToken;
-      } else { // access token is (still) not set and also not in URL, so redirect to Spotify login
+      } else {
         window.location = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&scope=playlist-modify-public&redirect_uri=${redirectUri}`;
       }
 
@@ -30,9 +30,8 @@ const Spotify = {
         Authorization: `Bearer ${this.getAccessToken()}`
       }
     }).then(response => response.json()).then(jsonResponse => {
-      if (jsonResponse.tracks) { //if converted JSON has tracks...
-        //console.log(jsonResponse.tracks);
-        return jsonResponse.tracks.items.map(track => { //mapping the converted JSON to an array of track objects
+      if (jsonResponse.tracks) {
+        return jsonResponse.tracks.items.map(track => {
           return {
             id: track.id,
             name: track.name,
@@ -46,11 +45,10 @@ const Spotify = {
   },
 
   savePlaylist(name, trackURIs) {
-    if (name !== '' && trackURIs !== '') { //if name and trackURIs are set
+    if (name !== '' && trackURIs !== '') {
       let userId = '';
       let playlistId = '';
 
-      //request user's Spotify username, convert response to JSON, and save to userId variable
       fetch('https://api.spotify.com/v1/me', {
         headers: {
           Authorization: `Bearer ${this.getAccessToken()}`
@@ -61,7 +59,6 @@ const Spotify = {
         userId = jsonResponse.id;
         console.log(userId);
 
-        //use returned userId to make POST request to add a new playlist on user's Spotify account, convert response to JSON, and save to playlistId variable
         return fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
           headers: {
             Authorization: `Bearer ${this.getAccessToken()}`,
@@ -78,7 +75,6 @@ const Spotify = {
         playlistId = jsonResponse.id;
         console.log(playlistId);
 
-        //use returned userId and playlistId to make POST request to add tracks to existing playlist on user's Spotify account, convert response to JSON, and reassign to playlistId variable
         return fetch(`https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`, {
           headers: {
             Authorization: `Bearer ${this.getAccessToken()}`,
