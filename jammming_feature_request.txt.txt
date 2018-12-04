@@ -1,0 +1,10 @@
+Two new feature requests were documented and implemented. Links to these documents are provided below.
+
+1. Change Display of Tracks on Search Results & Playlist:
+https://docs.google.com/document/d/155efVJ_X0Hr22232a6RGMtDajhAOVk8DavILb2lcT10/edit?usp=sharing
+
+2. Provide User Feedback When Loading Search Results and Saving Playlist:
+https://docs.google.com/document/d/1PH-WrK6Giu7XVk6Qk08JIQM8dwQTac8MUf4Xqm-8pCU/edit?usp=sharing
+
+Git Repo (to review code):
+https://github.com/aarpa/jammming
