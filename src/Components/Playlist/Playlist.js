@@ -6,10 +6,19 @@ class Playlist extends React.Component {
   constructor(props) {
     super(props);
     this.handleNameChange = this.handleNameChange.bind(this);
+    this.renderSaveButton = this.renderSaveButton.bind(this);
   }
 
   handleNameChange(eventObject) {
     this.props.onNameChange(eventObject.target.value)
+  }
+
+  renderSaveButton() {
+    if (this.props.postStatus) {
+      return <span className="Playlist-save">SAVING...</span>
+    } else {
+      return <span className="Playlist-save" onClick={this.props.onSave}>SAVE TO SPOTIFY</span>
+    }
   }
 
   render() {
@@ -20,10 +29,10 @@ class Playlist extends React.Component {
           value={this.props.playlistName}
           onChange={this.handleNameChange} />
         <TrackList
-          tracks={this.props.playlistTracks}
+          tracks={this.props.playlist}
           onRemove={this.props.onRemove}
           isRemoval={true} />
-        <span className="Playlist-save" onClick={this.props.onSave}>SAVE TO SPOTIFY</span>
+        {this.renderSaveButton()}
       </div>
     );
   }

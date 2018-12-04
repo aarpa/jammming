@@ -9,41 +9,66 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoading: false,
       searchResults: [],
       playlistName: '',
-      playlistTracks: []
+      playlist: [],
+      isPosting: false
     };
     this.searchSpotify = this.searchSpotify.bind(this);
-    this.addTrack = this.addTrack.bind(this);
-    this.removeTrack = this.removeTrack.bind(this);
+    this.addTrackToList = this.addTrackToList.bind(this);
+    this.removeTrackFromList = this.removeTrackFromList.bind(this);
+    this.moveTrackToSearchResults = this.moveTrackToSearchResults.bind(this);
+    this.moveTrackToPlaylist = this.moveTrackToPlaylist.bind(this);
     this.updatePlaylistName = this.updatePlaylistName.bind(this);
     this.savePlaylist = this.savePlaylist.bind(this);
     this.resetPlaylist = this.resetPlaylist.bind(this);
   }
 
   searchSpotify(term) {
+    this.setState({isLoading: true});
     Spotify.search(term).then(tracks => {
-      this.setState({searchResults: tracks});
+      this.setState({
+        searchResults: tracks,
+        isLoading: false
+      });
     });
   }
 
-  addTrack(track) {
-    // create copy of playlistTracks to avoid direct modification of state
-    let currentPlaylistTracks = this.state.playlistTracks.map(track => track);
-    if (!currentPlaylistTracks.some(savedTrack => savedTrack.id === track.id)) {
-      let newPlaylistTracks = currentPlaylistTracks.push(track);
-      this.setState({playlistTracks: newPlaylistTracks});
-    } else {
-      console.log('This track is already in your playlist');
+  addTrackToList(track, list) {
+    // create copy of passed list to avoid direct modification of state
+    if (list.some(savedTrack => savedTrack.id === track.id)) {
+      return list;
     }
+    let copiedList = [...list];
+    copiedList.unshift(track);
+    return copiedList;
   }
 
-  removeTrack(track) {
-    // create copy of playlistTracks to avoid direct modification of state
-    let updatedPlaylistTracks = this.state.playlistTracks.map(track => track);
-    let trackIndex = updatedPlaylistTracks.findIndex(savedTrack => savedTrack.id === track.id);
-    updatedPlaylistTracks.splice(trackIndex, 1);
-    this.setState({playlistTracks: updatedPlaylistTracks});
+  removeTrackFromList(track, list) {
+    // create copy of playlist to avoid direct modification of state
+    let copiedList = [...list];
+    let trackIndex = copiedList.findIndex(savedTrack => savedTrack.id === track.id);
+    copiedList.splice(trackIndex, 1);
+    return copiedList;
+  }
+
+  moveTrackToSearchResults(track) {
+    let updatedResults = this.addTrackToList(track, this.state.searchResults);
+    let updatedPlaylist = this.removeTrackFromList(track, this.state.playlist);
+    this.setState({
+        searchResults: updatedResults,
+        playlist: updatedPlaylist
+      });
+  }
+
+  moveTrackToPlaylist(track) {
+    let updatedResults = this.removeTrackFromList(track, this.state.searchResults);
+    let updatedPlaylist = this.addTrackToList(track, this.state.playlist);
+    this.setState({
+        searchResults: updatedResults,
+        playlist: updatedPlaylist
+      });
   }
 
   updatePlaylistName(name) {
@@ -51,15 +76,18 @@ class App extends React.Component {
   }
 
   savePlaylist() {
-    const trackURIs = this.state.playlistTracks.map(track => track.uri);
-    Spotify.savePlaylist(this.state.playlistName, trackURIs);
-    this.resetPlaylist();
+    const trackURIs = this.state.playlist.map(track => track.uri);
+    this.setState({isPosting: true});
+    Spotify.savePlaylist(this.state.playlistName, trackURIs).then(() => {
+      this.resetPlaylist();
+    });
   }
 
   resetPlaylist() {
     this.setState({
       playlistName: '',
-      playlistTracks: []
+      playlist: [],
+      isPosting: false
     });
   }
 
@@ -68,15 +96,18 @@ class App extends React.Component {
       <div>
         <h1>Ja<span className="highlight">mmm</span>ing</h1>
         <div className="App">
-          <SearchBar onSearch={this.searchSpotify} />
+          <SearchBar
+            isLoading={this.state.isLoading}
+            onSearch={this.searchSpotify} />
           <div className="App-playlist">
             <SearchResults
               searchResults={this.state.searchResults}
-              onAdd={this.addTrack} />
+              onAdd={this.moveTrackToPlaylist} />
             <Playlist
+              postStatus={this.state.isPosting}
               playlistName={this.state.playlistName}
-              playlistTracks={this.state.playlistTracks}
-              onRemove={this.removeTrack}
+              playlist={this.state.playlist}
+              onRemove={this.moveTrackToSearchResults}
               onNameChange={this.updatePlaylistName}
               onSave={this.savePlaylist} />
           </div>

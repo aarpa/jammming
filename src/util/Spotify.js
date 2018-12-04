@@ -57,7 +57,7 @@ const Spotify = {
       let playlistId = '';
 
       // GET request for userId
-      fetch('https://api.spotify.com/v1/me', {
+      return fetch('https://api.spotify.com/v1/me', {
         headers: {
           Authorization: `Bearer ${this.getAccessToken()}`
         }
