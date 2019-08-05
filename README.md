@@ -22,7 +22,7 @@ Save Playlist to Account — users can save their custom playlist by clicking a 
 
 ## Feature Additions
 
-In order to ensure that all essential use cases and edge cases are addressed, as well as to ensure that the technical implementation of the feature will work as intended and set up the app for future success, additional documentation was created for further development of this app. The following are links to the detailed documentations:
+In order to ensure that all essential use cases and edge cases are addressed, as well as to ensure that the technical implementation of the feature will work as intended and set up the app for future success, additional documentation was created for further development of this app. The following are links to the detailed technical design documents to lay out all of the necessary functionality of the features and how they should be implemented:
 
 [Change Display of Tracks on Search Results & Playlist](https://docs.google.com/document/d/155efVJ_X0Hr22232a6RGMtDajhAOVk8DavILb2lcT10/edit?usp=sharing)
 
